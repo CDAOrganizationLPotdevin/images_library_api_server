@@ -16,6 +16,16 @@ class ImagesRepository extends ServiceEntityRepository
         parent::__construct($registry, Images::class);
     }
 
+    public function findTopDownloadedImages(int $limit = 20): array
+    {
+        return $this->createQueryBuilder('i')
+            ->orderBy('i.nb_download', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+
     //    /**
     //     * @return Images[] Returns an array of Images objects
     //     */
