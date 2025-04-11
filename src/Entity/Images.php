@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 #[ApiResource()]
-#[ApiFilter(OrderFilter::class, properties: ['id'])]
+        
 #[ORM\Entity(repositoryClass: ImagesRepository::class)]
 class Images
 {
@@ -23,7 +23,7 @@ class Images
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $url = null;
+    private ?string $filename = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -59,14 +59,14 @@ class Images
         return $this->id;
     }
 
-    public function getUrl(): ?string
+    public function getFilename(): ?string
     {
-        return $this->url;
+        return $this->filename;
     }
 
-    public function setUrl(string $url): static
+    public function setFilename(string $filename): static
     {
-        $this->url = $url;
+        $this->filename = $filename;
 
         return $this;
     }
