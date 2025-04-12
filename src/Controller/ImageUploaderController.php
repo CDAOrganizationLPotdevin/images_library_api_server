@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Images;
 use DateTime;
 use DateTimeZone;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ImageUploaderController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $entityManager) {}
 
     #[Route('/upload/images', name: 'image_upload', methods: ['POST'])]
     public function upload(Request $request): Response
@@ -23,27 +26,21 @@ final class ImageUploaderController extends AbstractController
 
         if ($image) {
 
-            $destination = $this->getParameter('kernel.project_dir') . '/public/images';
+            $destination = $this->getParameter('kernel.project_dir') . '/public/images_chat';
             $newFilename = $name . "_" . uniqid() . '.' . $image->guessExtension();
             $image->move($destination, $newFilename);
 
-            $client = HttpClient::create();
-            $response = $client->request('POST', 'http://127.0.0.1:8002/images', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => [
-                    "url" => "http://127.0.0.1:8002/images/" . $newFilename,
-                    "name" => $name,
-                    "nb_download" => 0,
-                    "nb_opened" => 0,
-                    "last_time_viewed" => new DateTime(), // Date actuelle
-                    "is_deleted" => false,
-                    "creation_date" => new DateTime(), // Date actuelle
-                    "logs" => []
-                ],
-            ]);
+            $image = new Images();
+            $image->setFilename($newFilename);
+            $image->setName($name);
+            $image->setNbDownload(0);
+            $image->setNbOpened(0);
+            $image->setLastTimeViewed(new DateTime());
+            $image->setCreationDate(new DateTime());
+            $image->setIsDeleted(false);
 
+            $this->entityManager->persist($image);
+            $this->entityManager->flush();
 
             return new Response('Image downloaded successfully', Response::HTTP_OK);
         }

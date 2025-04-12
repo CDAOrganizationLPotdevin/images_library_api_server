@@ -69,12 +69,7 @@ final class ImagesGetterController extends AbstractController
     #[Route('/image-display/{id}', name: 'app_image_display_middleware', requirements: ['id' => '.+'], methods: ['GET'])]
     public function displayImages(string $id): Response
     {
-        
         try {
-            
-           
-
-
             $image = $this->imageGet(id: $id);
             
             $image->setNbOpened($image->getNbOpened()+1);
@@ -89,10 +84,6 @@ final class ImagesGetterController extends AbstractController
             $response->headers->set('Content-Disposition', 'inline');
 
             return $response ;
-
-            
-           
-           
         }
         catch (\Exception $e) {
             return new Response(''. $e->getMessage(), 500);
