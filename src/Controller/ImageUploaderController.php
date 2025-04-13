@@ -17,6 +17,7 @@ final class ImageUploaderController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
+    // Méthode de creation d'une nouvelle image (ajout en base de données et envoie de l'image sur le dossier public/images_chat)
     #[Route('/upload/images', name: 'image_upload', methods: ['POST'])]
     public function upload(Request $request): Response
     {

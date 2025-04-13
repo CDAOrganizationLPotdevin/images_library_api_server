@@ -19,9 +19,10 @@ final class ImagesGetterController extends AbstractController
     
     public function __construct(private EntityManagerInterface $entityManager){
 
+    
     }
-    #[Route('/image-test-display/{id}', name: 'app_image_getter')]
-    public function imageGet(int $id): Images
+    // Méthode de récupération des informtions d'une image par l'id
+   public function imageGet(int $id): Images
     {
         $Image = $this->entityManager->getRepository(Images::class)->find($id);
        
@@ -30,14 +31,12 @@ final class ImagesGetterController extends AbstractController
                 'No product found for id '.$id
             );
         }
-        // tell Doctrine you want to (eventually) save the Product (no queries yet)
-      
-
-        // actually executes the queries (i.e. the INSERT query)
+        
         return $Image ;
         
     }
 
+    // Route permettant la récupération et le téléchargement d'une image en ajoutant le logs du téléchargement 
     #[Route('/image-download/{id}', name: 'app_image_download_middleware')]
     public function downloadLogs(int $id): Response
     {
@@ -66,6 +65,8 @@ final class ImagesGetterController extends AbstractController
             return new Response('Error', 500) ;
         }
     }
+    // Route permettant la récupération et l'affichage d'une image en augmentant le nombre de vue de l'image 
+
     #[Route('/image-display/{id}', name: 'app_image_display_middleware', requirements: ['id' => '.+'], methods: ['GET'])]
     public function displayImages(string $id): Response
     {
